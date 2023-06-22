@@ -15,6 +15,7 @@ public enum ApiResponsesEnum {
     SIGN_IN_SUCCESSFULLY("User logged in successfully", "SIGN_IN_SUCCESSFULLY"),
     ROLE_CREATED_SUCCESSFULLY("Role created Successfully","ROLE_CREATED_SUCCESSFULLY"),
     PRIVILEGE_CREATED_SUCCESSFULLY("Privilege created successfully","PRIVILEGE_CREATED_SUCCESSFULLY"),
+    PRIVILEGES_FETCHED_SUCCESSFULLY("Privileges fetched successfully","PRIVILEGES_FETCHED_SUCCESSFULLY"),
     USER_CREATED_SUCCESSFULLY("User created successfully", "USER_CREATED_SUCCESSFULLY");
 
 

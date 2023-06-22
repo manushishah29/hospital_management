@@ -9,11 +9,14 @@ import com.softvan.hospitalManagement.repository.RoleRepository;
 import com.softvan.hospitalManagement.repository.UserRepository;
 import com.softvan.hospitalManagement.repository.UserRoleRepository;
 import com.softvan.hospitalManagement.requestDto.UserRequestDto;
+import com.softvan.hospitalManagement.responseDto.PrivilegesResponseDto;
 import com.softvan.hospitalManagement.responseDto.UserResponseDto;
 import com.softvan.hospitalManagement.service.UserService;
 import com.softvan.hospitalManagement.util.Utilities;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -69,6 +72,11 @@ public class UserServiceImpl implements UserService {
         //update userEntity
         return mapToUserResponseDto(userEntity);
 
+    }
+
+    @Override
+    public Page<UserResponseDto> getAllUsers(String searchValue, Pageable pageable) {
+        return userRepository.getAll("%"+searchValue+"%",pageable).map(this::mapToUserResponseDto);
     }
 
     private UserResponseDto mapToUserResponseDto(UserEntity user) {

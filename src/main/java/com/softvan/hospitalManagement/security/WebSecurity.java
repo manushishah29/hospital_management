@@ -16,6 +16,9 @@ import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -33,27 +36,37 @@ public class WebSecurity {
     @Primary
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors();
+        // Disable CSRF (cross site request forgery)
         http.csrf().disable();
+        // Need ssl connection except in dev environment.
+
+        http.cors();
         // No session will be created or used by spring security.
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        // set Expression Handler
-        http.authorizeRequests()
-                .expressionHandler(webSecurityExpressionHandler());
         // Entry points
-        http.authorizeRequests()
-                .antMatchers(this.getPublicUrls())
+        http
+                .authorizeRequests()
+                .antMatchers("/actuator/health")
+                .permitAll()
+                .antMatchers("/actuator/**")
+                .permitAll()
+                .antMatchers(Stream
+                        .concat(Arrays.stream(getAuthPublicAPIEndpoints()), Arrays.stream(getAuthPublicAPIEndpoints()))
+                        .toArray(String[]::new))
+
                 .permitAll()
                 // Disallow everything else..
                 .anyRequest()
                 .authenticated();
-        // Apply JWT
-        http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
 
-//        http.addFilterBefore(new JwtTokenFilter(jwtTokenProvider), JwtTokenFilter.class);
+        // Apply JWT
+        // http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider, redisCacheService,
+        // enableRedisLogin, isproxy))
+        http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
 
         // Optional, if you want to test the API from a browser
         http.httpBasic().disable();
+
         return http.build();
     }
 
@@ -70,7 +83,7 @@ public class WebSecurity {
         return defaultWebSecurityExpressionHandler;
     }
 
-    public String[] getPublicUrls() {
+    public String[] getAuthPublicAPIEndpoints() {
         return new String[]{
                 "/authenticate/**",
                 "/register/**",

@@ -24,6 +24,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
         return permissions.contains(permission.toString());
     }
 
+
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
         return true;
