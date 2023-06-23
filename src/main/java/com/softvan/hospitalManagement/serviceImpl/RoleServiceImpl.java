@@ -14,9 +14,10 @@ import com.softvan.hospitalManagement.service.RoleService;
 import com.softvan.hospitalManagement.util.Utilities;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -73,16 +74,29 @@ public class RoleServiceImpl implements RoleService {
 
             rolePrivilegesRepository.save(privilegeRole);
         });
-        return mapToUserResponseDto(role, privileges);
+        return mapToRoleResponseDto(role, privileges);
     }
 
-    private RoleResponseDto mapToUserResponseDto(RoleEntity role, Set<PrivilegesEntity> privilege) {
+    @Override
+    public Page<RoleResponseDto> getRole(String searchValue, Pageable pageable) {
+        return roleRepository.findRoleWithPagination("%"+searchValue+"%",pageable).map(this::mapToRoleResponseDto);
+    }
+
+    private RoleResponseDto mapToRoleResponseDto(RoleEntity role, Set<PrivilegesEntity> privilege) {
         return Optional.ofNullable(role).map(e -> {
             var result = this.modelMapper.map(e, RoleResponseDto.class);
-            result.setPrivilege(privilege.stream().map(p -> {
-                return p.getPrivilegeName();
-            }).collect(Collectors.toSet()));
+            result.setPrivilege(privilege.stream().map(p -> p.getPrivilegeName()).collect(Collectors.toSet()));
             return result;
         }).orElseGet(RoleResponseDto::new);
     }
+
+    private RoleResponseDto mapToRoleResponseDto(RoleEntity role) {
+        return Optional.ofNullable(role).map(e -> {
+            var privilegeRoleMapping=rolePrivilegesRepository.findByRole(role);
+            var result = this.modelMapper.map(e, RoleResponseDto.class);
+            result.setPrivilege(privilegeRoleMapping.stream().map(p -> p.getPrivilege().getPrivilegeName()).collect(Collectors.toSet()));
+            return result;
+        }).orElseGet(RoleResponseDto::new);
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.softvan.hospitalManagement.repository;
 
+import com.softvan.hospitalManagement.entity.PrivilegesEntity;
+import com.softvan.hospitalManagement.entity.RoleEntity;
 import com.softvan.hospitalManagement.entity.RolePrivilegesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,5 +17,7 @@ public interface RolePrivilegesRepository extends JpaRepository<RolePrivilegesEn
 
 
 //    Optional<List<RoleRightsMappingEntity>> findByRoleId(RoleEntity roleEntity);
+
+    List<RolePrivilegesEntity> findByRole(RoleEntity roleEntity);
 
 }

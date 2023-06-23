@@ -39,9 +39,9 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public JwtResponseDto createJwtToken(JwtRequestDto getTokenRequestDto) {
 
-        Optional<UserEntity> userEntity = userRepository.findByEmailIgnoreCase(getTokenRequestDto.getEmail());
-
-        var user=userRepository.findByEmailIgnoreCase(getTokenRequestDto.getEmail())
+        Optional<UserEntity> userEntity = userRepository.findByUsernameIgnoreCase(getTokenRequestDto.getUsername());
+        System.out.println("getTokenRequestDto.getUsername() = " + getTokenRequestDto.getUsername());
+        var user=userRepository.findByUsernameIgnoreCase(getTokenRequestDto.getUsername())
                 .orElseThrow(() -> new CustomException(ExceptionEnum.USERNAME_NOT_FOUND.getValue(), HttpStatus.BAD_REQUEST));
 
         if(!passwordEncoder.matches(getTokenRequestDto.getPassword(),user.getPassword())){
@@ -69,7 +69,7 @@ public class LoginServiceImpl implements LoginService {
         List<PrivilegesEntity> rightsEntitiesList = roleRightsMappingEntity.stream().map(RolePrivilegesEntity::getPrivilege).collect(Collectors.toList());
 
         try {
-            return new JwtResponseDto(jwtTokenProvider.createToken(userEntity.getEmail(), userEntity.getId(),role, rightsEntitiesList));
+            return new JwtResponseDto(jwtTokenProvider.createToken(userEntity.getUsername(), userEntity.getId(),role, rightsEntitiesList));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

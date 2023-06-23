@@ -120,7 +120,7 @@ public class JwtTokenProvider {
 
     public List<String> getPermission(Authentication authentication, Object permission) {
 
-        Optional<UserEntity> user = userRepository.findByEmailIgnoreCase(authentication.getName());
+        Optional<UserEntity> user = userRepository.findByUsernameIgnoreCase(authentication.getName());
         Optional<UserRoleEntity> userRoleEntity = userRoleRepository.findByUser(user.get());
         Optional<RolePrivilegesEntity> rolePrivilegeList = rolePrivilegesRepository.findById(userRoleEntity.get().getId());
         List<PrivilegesEntity> privilegeList = rolePrivilegeList.stream().map(RolePrivilegesEntity::getPrivilege).collect(Collectors.toList());

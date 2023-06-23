@@ -40,7 +40,7 @@ public class UserController {
 
         Pageable pageable= PageRequest.of(pageNo,pageSize,Sort.by(sortAs,sortBy));
         Page<UserResponseDto> responseDto = userService.getAllUsers(searchValue,pageable);
-        return new ResponseEntity<>(new ApiResponse(HttpStatus.OK,ApiResponsesEnum.PRIVILEGES_FETCHED_SUCCESSFULLY.getValue(),responseDto),HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(HttpStatus.OK,ApiResponsesEnum.USER_FETCHED_SUCCESSFULLY.getValue(),responseDto),HttpStatus.OK);
     }
 
 

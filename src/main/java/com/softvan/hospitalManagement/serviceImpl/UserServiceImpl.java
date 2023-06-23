@@ -10,6 +10,7 @@ import com.softvan.hospitalManagement.repository.UserRepository;
 import com.softvan.hospitalManagement.repository.UserRoleRepository;
 import com.softvan.hospitalManagement.requestDto.UserRequestDto;
 import com.softvan.hospitalManagement.responseDto.PrivilegesResponseDto;
+import com.softvan.hospitalManagement.responseDto.RoleResponseDto;
 import com.softvan.hospitalManagement.responseDto.UserResponseDto;
 import com.softvan.hospitalManagement.service.UserService;
 import com.softvan.hospitalManagement.util.Utilities;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,12 +40,12 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto registerNewUser(UserRequestDto dto) {
 
 
-        var userEntity1 = userRepository.findByEmailIgnoreCase(dto.getEmail());
+        var userEntity1 = userRepository.findByUsernameIgnoreCase(dto.getUsername());
         if (userEntity1.isPresent()) {
             throw new CustomException(ExceptionEnum.USER_ALREADY_EXISTS.getValue(), HttpStatus.BAD_REQUEST);
         }
         UserEntity userEntity=new UserEntity();
-        userEntity.setEmail(dto.getEmail());
+        userEntity.setUsername(dto.getUsername());
         userEntity.setPassword(passwordEncoder.encode(dto.getPassword()));
         userEntity.setFirstName(dto.getFirstName());
         userEntity.setLastName(dto.getLastName());
@@ -81,9 +83,15 @@ public class UserServiceImpl implements UserService {
 
     private UserResponseDto mapToUserResponseDto(UserEntity user) {
         return Optional.ofNullable(user).map(e -> {
+            var userRoleMapping=userRoleRepository.findByUser(user);
             var result = this.modelMapper.map(e, UserResponseDto.class);
-            return result;
+            Optional.ofNullable(userRoleMapping).ifPresent(u->result.setRole(u.get().getRole().getRoleName()));
+             return result;
         }).orElseGet(UserResponseDto::new);
     }
+
+
+
+
 
 }

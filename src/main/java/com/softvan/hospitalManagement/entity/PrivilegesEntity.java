@@ -15,7 +15,7 @@ public class PrivilegesEntity extends BaseEntityAudit{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    private Integer id;
 
     @Column(name = "privilege_name")
     private String privilegeName;

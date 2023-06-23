@@ -15,7 +15,7 @@ public class RoleEntity extends BaseEntityAudit{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer Id;
+    private Integer id;
 
     @Column(name = "role_name")
     private String roleName;

@@ -14,9 +14,11 @@ package com.softvan.hospitalManagement.enums;
 public enum ApiResponsesEnum {
     SIGN_IN_SUCCESSFULLY("User logged in successfully", "SIGN_IN_SUCCESSFULLY"),
     ROLE_CREATED_SUCCESSFULLY("Role created Successfully","ROLE_CREATED_SUCCESSFULLY"),
+    ROLE_FETCHED_SUCCESSFULLY("Role fetched successfully","ROLE_FETCHED_SUCCESSFULLY"),
     PRIVILEGE_CREATED_SUCCESSFULLY("Privilege created successfully","PRIVILEGE_CREATED_SUCCESSFULLY"),
     PRIVILEGES_FETCHED_SUCCESSFULLY("Privileges fetched successfully","PRIVILEGES_FETCHED_SUCCESSFULLY"),
-    USER_CREATED_SUCCESSFULLY("User created successfully", "USER_CREATED_SUCCESSFULLY");
+    USER_CREATED_SUCCESSFULLY("User created successfully", "USER_CREATED_SUCCESSFULLY"),
+    USER_FETCHED_SUCCESSFULLY("User fetched successfully","USER_FETCHED_SUCCESSFULLY");
 
 
     private String value;
